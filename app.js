@@ -67,12 +67,12 @@ function mainMenu(person, people) {
             //! TODO #1: Utilize the displayPerson function //////////////////////////////////////////
             // HINT: Look for a person-object stringifier utility function to help
             let personInfo = displayPerson(person[0]);
-            alert(personInfo);//Undefined-Bug
+            alert(personInfo);//Undefined-Bug-Done!!!
             break;
         case "family":
             //! TODO #2: Declare a findPersonFamily function //////////////////////////////////////////
             // HINT: Look for a people-collection stringifier utility function to help
-            let personFamily = findPersonFamily(person[0], people);
+            let personFamily = findPersonFamily(person[0], people);//should have variable for familyInfo = displayPeople
             alert(personFamily);
             break;
         case "descendants":
@@ -149,8 +149,8 @@ function displayPerson(person) {
     personInfo += `Parents: ${person.parents}\n`;
     personInfo += `Current Spouse: ${person.currentSpouse}\n`;
 
-    //! TODO #1a: finish getting the rest of the information to display //////////////////////////////////////////
-    alert(personInfo);//Display Information
+    //DONE! TODO #1a: finish getting the rest of the information to display //////////////////////////////////////////
+    return(personInfo);//Display Information
 }
 // End of displayPerson()
 
@@ -193,3 +193,45 @@ function chars(input) {
 
 //////////////////////////////////////////* End Of Starter Code *//////////////////////////////////////////
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
+function searchByCurrentSpouse(people){
+    let foundSpouse = people.filter(function (person) {
+        if (person.currentSpouse === people.id) {
+            return true;
+        }
+    });
+    return foundSpouse;
+}
+
+// function searchByParents(people){
+//     function searchByCurrentSpouse(people){
+//         let foundParent = people.filter(function (person) {
+//             if (person.parents === people.id) {
+//                 return true;
+//             }
+//         });
+//         return foundParent;
+//     }
+// }
+
+// function searchByDescendants(people){}
+
+// function searchBySibling(people){}
+
+function findPersonFamily(foundPerson, people) {
+    let foundFamily = people.filter(function (people) {
+        if (foundPerson.lastName === people.lastName) {
+            return true;
+        } 
+        else if (foundPerson.id === people.currentSpouse){
+            return true;
+        }
+        else if (people.parents.includes(foundPerson.id)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    });  
+       displayPeople(foundFamily)
+    
+}
