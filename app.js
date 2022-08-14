@@ -206,14 +206,11 @@ function searchByTraits(people) {
             while (maxTraits < numTraits){
                 let traitQuestion = promptFor("Please enter a trait type to search for. ", chars);
                 let traitValue = promptFor("Please enter the trait value you want to search for. ", chars);
-                traitNumber += 1
-                maxTraits += 1
+                {
+                    traitNumber += `Trait Value${traitNumber} : ${people.traitNumber}\n`;
+                    maxTraits += 1
+                }
             }
-            let traitValue = `Trait Value 1: ${people.traitNumber}\n`;
-            traitValue += `Trait Value 2: ${people.traitNumber}\n`;
-            traitValue += `Trait Value 3: ${people.traitNumber}\n`;
-            traitValue += `Trait Value 4: ${people.traitNumber}\n`;
-            traitValue += `Trait Value 5: ${person.traitNumber}\n`;
         }
             displayPeople(numTraits)  
     }
