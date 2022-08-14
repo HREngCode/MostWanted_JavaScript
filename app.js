@@ -194,28 +194,37 @@ function chars(input) {
 //////////////////////////////////////////* End Of Starter Code *//////////////////////////////////////////
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
 function searchByTraits(people) {
-    let traitType = promptFor("How many traits would you like to search for? Enter a number from 1-5 ",)
-    let traitTwo = promptFor("What is the person's last name?", chars);
-
-    // The foundPerson value will be of type Array. Recall that .filter() ALWAYS returns an array.
-    let foundPerson = people.filter(function (person) {
-        if (person.firstName === firstName && person.lastName === lastName) {
+    let maxTraits = 0;
+    let traitNumber = 0
+    let numTraits = promptFor("How many traits would you like to search for? Enter a number from 1-5 ", nums)
+        {
+            if (numTraits < 1 || numTraits > 5){
+                alert("Please Enter a Number Between 1 and 5");
+                return searchByTraits(people);
+        }
+        else{
+            while (maxTraits < numTraits){
+                let traitQuestion = promptFor("Please enter a trait type to search for. ", chars);
+                let traitValue = promptFor("Please enter the trait value you want to search for. ", chars);
+                traitNumber += 1
+                maxTraits += 1
+            }
+            let traitValue = `Trait Value 1: ${people.traitNumber}\n`;
+            traitValue += `Trait Value 2: ${people.traitNumber}\n`;
+            traitValue += `Trait Value 3: ${people.traitNumber}\n`;
+            traitValue += `Trait Value 4: ${people.traitNumber}\n`;
+            traitValue += `Trait Value 5: ${person.traitNumber}\n`;
+        }
+            displayPeople(numTraits)  
+    }
+    let foundByTrait = people.filter(function (people) {
+        if (people.firstName === firstName && person.lastName === lastName) {
             return true;
         }
     });
     return foundPerson;
 }
 // End of searchByTraits()
-function nums(input) {
-    if (input < 1 || input > 5){
-        alert("Please Enter a Number Between 1 and 5")
-        return searchByTraits(people)
-    }
-    else{
-        return true; // Default validation only
-    }
-}
-// End of nums()
 function searchByCurrentSpouse(people){
     let foundSpouse = people.filter(function (people) {
         if (foundPerson.id === people.currentSpouse){
