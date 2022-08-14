@@ -72,7 +72,7 @@ function mainMenu(person, people) {
         case "family":
             //! TODO #2: Declare a findPersonFamily function //////////////////////////////////////////
             // HINT: Look for a people-collection stringifier utility function to help
-            let personFamily = findPersonFamily(person[0], people);//should have variable for familyInfo = displayPeople
+            let personFamily = findPersonFamily(person[0], people);//Done!
             alert(personFamily);
             break;
         case "descendants":
@@ -187,44 +187,70 @@ function yesNo(input) {
  * @returns {Boolean}           Default validation -- no logic yet.
  */
 function chars(input) {
-    return true; // Default validation only
+    return true; // Default validation only 
 }
 // End of chars()
 
 //////////////////////////////////////////* End Of Starter Code *//////////////////////////////////////////
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
+function searchByTraits(people) {
+    let traitType = promptFor("How many traits would you like to search for? Enter a number from 1-5 ",)
+    let traitTwo = promptFor("What is the person's last name?", chars);
+
+    // The foundPerson value will be of type Array. Recall that .filter() ALWAYS returns an array.
+    let foundPerson = people.filter(function (person) {
+        if (person.firstName === firstName && person.lastName === lastName) {
+            return true;
+        }
+    });
+    return foundPerson;
+}
+// End of searchByTraits()
+function nums(input) {
+    if (input < 1 || input > 5){
+        alert("Please Enter a Number Between 1 and 5")
+        return searchByTraits(people)
+    }
+    else{
+        return true; // Default validation only
+    }
+}
+// End of nums()
 function searchByCurrentSpouse(people){
-    let foundSpouse = people.filter(function (person) {
-        if (person.currentSpouse === people.id) {
+    let foundSpouse = people.filter(function (people) {
+        if (foundPerson.id === people.currentSpouse){
             return true;
         }
     });
     return foundSpouse;
 }
-
-// function searchByParents(people){
-//     function searchByCurrentSpouse(people){
-//         let foundParent = people.filter(function (person) {
-//             if (person.parents === people.id) {
-//                 return true;
-//             }
-//         });
-//         return foundParent;
-//     }
-// }
+function searchBySibling(people){
+    let foundSibling = people.filter(function (people) {
+        if ((foundPerson.lastName === people.lastName) && (foundPerson.id != people.currentSpouse)) {
+            return true;
+        } 
+    });
+    return foundSibling;
+}
+function searchByParents(people){
+        let foundParent = people.filter(function (person) {
+        if (people.parents.includes(foundPerson.id)){
+                return true;
+            }
+        return foundParent;
+    }) 
+}
 
 // function searchByDescendants(people){}
 
-// function searchBySibling(people){}
-
 function findPersonFamily(foundPerson, people) {
     let foundFamily = people.filter(function (people) {
-        if (foundPerson.lastName === people.lastName) {
-            return true;
-        } 
-        else if (foundPerson.id === people.currentSpouse){
+        if (foundPerson.id === people.currentSpouse){
             return true;
         }
+        else if ((foundPerson.lastName === people.lastName) && (foundPerson.id != people.currentSpouse)) {
+            return true;
+        } 
         else if (people.parents.includes(foundPerson.id)){
             return true;
         }
@@ -232,6 +258,5 @@ function findPersonFamily(foundPerson, people) {
             return false;
         }
     });  
-       displayPeople(foundFamily)
-    
+       displayPeople(foundFamily)   
 }
