@@ -72,8 +72,7 @@ function mainMenu(person, people) {
         case "family":
             //! TODO #2: Declare a findPersonFamily function //////////////////////////////////////////
             // HINT: Look for a people-collection stringifier utility function to help
-            let personFamily = findPersonFamily(person[0], people);//Done!
-            alert(personFamily);
+            findPersonFamily(person[0], people);//Done!
             break;
         case "descendants":
             //! TODO #3: Declare a findPersonDescendants function //////////////////////////////////////////
@@ -194,7 +193,7 @@ function chars(input) {
 //////////////////////////////////////////* End Of Starter Code *//////////////////////////////////////////
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
 function searchByTraits(people) {
-    let maxTraits = 1;
+    let maxTraits = 0;
     let numTraits = parseInt(prompt("How many traits would you like to search for? Enter a number from 1-5! "))
         {
             if (numTraits < 1 || numTraits > 5){
@@ -202,21 +201,20 @@ function searchByTraits(people) {
                 return searchByTraits(people);
         }
             else{
-                while (maxTraits < numTraits){
+                maxTraits += 1 
+                while (maxTraits < numTraits)
+                {
                     let trait = promptFor("Please enter a trait type to search for. ", chars);
                     let traitValue = promptFor("Please enter the trait value you want to search for. ", chars);
-                    let newArray = people.fliter(
-                        function(person){
-                            if(person[trait] === traitValue)
-                            return person
-                        }
-                    )
+                    let newArray = people.filter(function(person)
                     {
-                        maxTraits += 1
-                    }
-            }
-        }
-        
+                        if(person[trait] === traitValue)
+                        {
+                        return person;
+                        } 
+                    });return newArray;
+                } 
+        }  
     }
 }
 // function searchByTraits(people){
@@ -236,16 +234,16 @@ function searchByCurrentSpouse(people){
         if (foundPerson.id === people.currentSpouse){
             return true;
         }
+        return foundSpouse;
     });
-    return foundSpouse;
 }
 function searchBySibling(people){
     let foundSibling = people.filter(function (people) {
         if ((foundPerson.lastName === people.lastName) && (foundPerson.id != people.currentSpouse)) {
             return true;
         } 
+        return foundSibling;
     });
-    return foundSibling;
 }
 function searchByParents(people){
         let foundParent = people.filter(function (person) {
@@ -273,5 +271,5 @@ function findPersonFamily(foundPerson, people) {
             return false;
         }
     });  
-       displayPeople(foundFamily)   
+    displayPeople(foundFamily)   
 }
