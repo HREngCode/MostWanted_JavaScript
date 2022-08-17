@@ -194,33 +194,42 @@ function chars(input) {
 //////////////////////////////////////////* End Of Starter Code *//////////////////////////////////////////
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
 function searchByTraits(people) {
-    let maxTraits = 0;
-    let traitNumber = 0
-    let numTraits = promptFor("How many traits would you like to search for? Enter a number from 1-5 ", nums)
+    let maxTraits = 1;
+    let numTraits = parseInt(prompt("How many traits would you like to search for? Enter a number from 1-5! "))
         {
             if (numTraits < 1 || numTraits > 5){
                 alert("Please Enter a Number Between 1 and 5");
                 return searchByTraits(people);
         }
-        else{
-            while (maxTraits < numTraits){
-                let traitQuestion = promptFor("Please enter a trait type to search for. ", chars);
-                let traitValue = promptFor("Please enter the trait value you want to search for. ", chars);
-                {
-                    traitNumber += `Trait Value${traitNumber} : ${people.traitNumber}\n`;
-                    maxTraits += 1
-                }
+            else{
+                while (maxTraits < numTraits){
+                    let trait = promptFor("Please enter a trait type to search for. ", chars);
+                    let traitValue = promptFor("Please enter the trait value you want to search for. ", chars);
+                    let newArray = people.fliter(
+                        function(person){
+                            if(person[trait] === traitValue)
+                            return person
+                        }
+                    )
+                    {
+                        maxTraits += 1
+                    }
             }
         }
-            displayPeople(numTraits)  
+        
     }
-    let foundByTrait = people.filter(function (people) {
-        if (people.firstName === firstName && person.lastName === lastName) {
-            return true;
-        }
-    });
-    return foundPerson;
 }
+// function searchByTraits(people){
+//     let trait = promptFor("Please enter a trait type to search for. ", chars);
+//     let traitValue = promptFor("Please enter the trait value you want to search for. ", chars);
+//     let newArray = people.fliter(
+//         function(person){
+//             if(person[trait] === traitValue)
+//             return findPersonFamily
+//         }
+//     )
+//         displayPeople(newArray)
+// }
 // End of searchByTraits()
 function searchByCurrentSpouse(people){
     let foundSpouse = people.filter(function (people) {
