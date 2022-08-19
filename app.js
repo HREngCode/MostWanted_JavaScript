@@ -13,7 +13,7 @@
  * This is the main logic function being called in index.html.
  * It operates as the entry point for our entire application and allows
  * our user to decide whether to search by name or by traits.
- * @param {Array} people        A collection of person objects.
+ * @param {Array} people  A collection of person objects.
  */
 function app(people) {
     // promptFor() is a custom function defined below that helps us prompt and validate input more easily
@@ -53,11 +53,15 @@ function app(people) {
  */
 function mainMenu(person, people) {
     // A check to verify a person was found via searchByName() or searchByTrait()
-    if (!person[0]) {
+    let numPeople = people.length;
+    if (numPeople > 1){
+        return app(people);
+    }
+    else if (!person[0]) {
         alert("Could not find that individual.");
         // Restarts app() from the very beginning
         return app(people);
-    }
+        }
     let displayOption = prompt(
         `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`
     );
@@ -193,7 +197,7 @@ function chars(input) {
 //////////////////////////////////////////* End Of Starter Code *//////////////////////////////////////////
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
 function searchByTraits(people) {
-    let maxTraits = 0;
+    let maxTraits = 1;
     let numTraits = parseInt(prompt("How many traits would you like to search for? Enter a number from 1-5! "))
         {
             if (numTraits < 1 || numTraits > 5){
@@ -201,7 +205,6 @@ function searchByTraits(people) {
                 return searchByTraits(people);
         }
             else{
-                maxTraits += 1 
                 while (maxTraits < numTraits)
                 {
                     let trait = promptFor("Please enter a trait type to search for. ", chars);
@@ -212,7 +215,8 @@ function searchByTraits(people) {
                         {
                         return person;
                         } 
-                    });return newArray;
+                    });displayPeople(newArray)
+                    maxTraits += 1     
                 } 
         }  
     }
