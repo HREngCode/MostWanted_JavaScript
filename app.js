@@ -58,6 +58,10 @@ function mainMenu(person, people) {
     // Restarts app() from the very beginning
     return app(people);
   }
+  else if (person.length > 1) {
+    // Restarts app() from the very beginning
+    return app(people);
+  }
   let displayOption = prompt(
     `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`
   );
@@ -180,14 +184,30 @@ function yesNo(input) {
 // End of yesNo()
 
 /**
+ * This helper function checks to see if the value passed into input is either "single" or "multiple."
+ * @param {String} input        A string that will be normalized via .toLowerCase().
+ * @returns {Boolean}           The result of our condition evaluation.
+ */
+ function singMult(input) {
+    return input.toLowerCase() === "single" || input.toLowerCase() === "multiple";
+  }
+  // End of singMult()
+
+/**
  * This helper function operates as a default callback for promptFor's validation.
  * Feel free to modify this to suit your needs.
  * @param {String} input        A string.
  * @returns {Boolean}           Default validation -- no logic yet.
  */
 function chars(input) {
-    if (input === String)return true; // Default validation only
-    else if(input === Number.isInteger())return true;
+    let promptAnswer = input;
+    if (!promptAnswer) {
+        alert("You must enter an answer");
+        return app(people);
+    }
+    else{
+        return true; // Default validation only
+    }
 }
 // End of chars()
 
@@ -217,7 +237,7 @@ function searchByTraits(people) {
         );
         newArray = newArray.filter(function (person) {
           if (person[trait] === traitValue) {
-            return person;
+            return true;
           }
         });
         if (newArray.length === 1) return newArray;
@@ -227,10 +247,86 @@ function searchByTraits(people) {
         }
         displayPeople(newArray);
         maxTraits += 1;
-      }
+      } return newArray
     }
-  }
+  } 
 }
+// function searchByTraits(people) {
+//     let maxTraits = 0;
+//     let numTraits = (
+//       promptFor(
+//         "How many traits would you like to search for? Please type single or multiple! ", singMult
+//       )
+//     ); 
+//     if (numTraits === "single"){
+//         let newArray = people;
+//           let trait = promptFor(
+//             "Please enter a trait type to search for. ",
+//             chars
+//           );
+//           let traitValue = promptFor(
+//             "Please enter the trait value you want to search for. ",
+//             chars
+//           );
+//           newArray = newArray.filter(function (person) {
+//             if (person[trait] === traitValue) {
+//               return person;
+//             }
+//           });
+//           if (newArray.length === 1) return newArray;
+//           if (newArray.length === 0) {
+//             alert("This function has resulted in zero results. Restarting!");
+//             return searchByTraits(people);
+//           }
+//           displayPeople(newArray);
+//     }
+//     if (numTraits === "multiple"){
+
+//     }
+//       if (numTraits < 2 || numTraits > 5) {
+//         alert("Please Enter a Number Between 2 and 5");
+//         return searchByTraits(people);
+//       } 
+//       else {
+//         let newArray = people;
+//         while (maxTraits < numTraits) {
+//           let trait = promptFor(
+//             "Please enter a trait type to search for. ",
+//             chars
+//           );
+//           let traitValue = promptFor(
+//             "Please enter the trait value you want to search for. ",
+//             chars
+//           );
+//           newArray = newArray.filter(function (person) {
+//             if (person[trait] === traitValue) 
+//             {
+//               return person;
+//             }
+//           });
+//           if (newArray.length === 1) return newArray;
+//           if (newArray.length === 0) {
+//             alert("This function has resulted in zero results. Restarting!");
+//             return searchByTraits(people);
+//           }
+//           displayPeople(newArray);
+//         }
+//       }
+//     }
+
+function recursiveFindTraits(obj, array = []){
+    let subArray = obj.trait;
+    array = [obj];
+    if (subArray.length === 0) {
+        return array;
+    }
+    for (let i = 0; i < subArray.length; i++) {
+        array = array.concat(
+            recursiveFindTraits(subArray[i])
+        );
+    }
+}
+
 // function searchByTraits(people){
 //     let trait = promptFor("Please enter a trait type to search for. ", chars);
 //     let traitValue = promptFor("Please enter the trait value you want to search for. ", chars);
