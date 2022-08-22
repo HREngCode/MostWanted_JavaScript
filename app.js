@@ -451,16 +451,16 @@ function searchByTraits(people) {
   }
 }
 
-function recursiveFindTraits(obj, array = []) {
-  let subArray = obj.trait;
-  array = [obj];
-  if (subArray.length === 0) {
-    return array;
-  }
-  for (let i = 0; i < subArray.length; i++) {
-    array = array.concat(recursiveFindTraits(subArray[i]));
-  }
-}
+// function recursiveFindTraits(obj, array = []) {
+//   let subArray = obj.trait;
+//   array = [obj];
+//   if (subArray.length === 0) {
+//     return array;
+//   }
+//   for (let i = 0; i < subArray.length; i++) {
+//     array = array.concat(recursiveFindTraits(subArray[i]));
+//   }
+// }
 
 
 function searchByCurrentSpouse(foundPerson,people) {
