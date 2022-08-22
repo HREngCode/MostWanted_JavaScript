@@ -53,17 +53,16 @@ function app(people) {
  */
 function mainMenu(person, people) {
   // A check to verify a person was found via searchByName() or searchByTrait()
-    if (!person[0]) {
+  if (!person[0]) {
     alert("Could not find that individual.");
     // Restarts app() from the very beginning
     return app(people);
-  }
-  else if (person.length > 1) {
+  } else if (person.length > 1) {
     // Restarts app() from the very beginning
     return app(people);
   }
   let displayOption = prompt(
-    `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`
+    `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', 'current spouse', 'sibling', 'parents' or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`
   );
   // Routes our application based on the user's input
   switch (displayOption) {
@@ -78,11 +77,19 @@ function mainMenu(person, people) {
       // HINT: Look for a people-collection stringifier utility function to help
       findPersonFamily(person[0], people); //Done!
       break;
+    case "current spouse":
+      searchByCurrentSpouse(person[0], people);
+      break;
+    case "sibling":
+      searchBySibling(person[0], people);
+      break;
+    case "parents":
+      searchByParents(person[0], people);
+      break;
     case "descendants":
       //! TODO #3: Declare a findPersonDescendants function //////////////////////////////////////////
       // HINT: Review recursion lecture + demo for bonus user story
-      let personDescendants = findPersonDescendants(person[0], people);
-      alert(personDescendants);
+      findPersonDescendants(person[0], people);
       break;
     case "restart":
       // Restart app() from the very beginning
@@ -129,6 +136,23 @@ function displayPeople(people) {
     people
       .map(function (person) {
         return `${person.firstName} ${person.lastName}`;
+      })
+      .join("\n")
+  );
+}
+// End of displayPeople()
+
+/**
+ * This function will be useful for STRINGIFYING a collection of family-objects
+ * first and last name properties in order to easily send the information
+ * to the user in the form of an alert().
+ * @param {Array} people        A collection of person objects.
+ */
+ function displayFamily(people) {
+  alert(
+    people
+      .map(function (person) {
+        return `${person.firstName} ${person.lastName} relation: ${label}`;
       })
       .join("\n")
   );
@@ -188,10 +212,10 @@ function yesNo(input) {
  * @param {String} input        A string that will be normalized via .toLowerCase().
  * @returns {Boolean}           The result of our condition evaluation.
  */
- function singMult(input) {
-    return input.toLowerCase() === "single" || input.toLowerCase() === "multiple";
-  }
-  // End of singMult()
+function singMult(input) {
+  return input.toLowerCase() === "single" || input.toLowerCase() === "multiple";
+}
+// End of singMult()
 
 /**
  * This helper function operates as a default callback for promptFor's validation.
@@ -200,154 +224,254 @@ function yesNo(input) {
  * @returns {Boolean}           Default validation -- no logic yet.
  */
 function chars(input) {
-    let promptAnswer = input;
-    if (!promptAnswer) {
-        alert("You must enter an answer");
-        return app(people);
-    }
-    else{
-        return true; // Default validation only
-    }
+  let promptAnswer = input;
+  if (!promptAnswer) {
+    alert("You must enter an answer");
+    return app(people);
+  } else {
+    return true; // Default validation only
+  }
 }
 // End of chars()
 
 //////////////////////////////////////////* End Of Starter Code *//////////////////////////////////////////
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
 function searchByTraits(people) {
-  let maxTraits = 0;
-  let numTraits = parseInt(
-    promptFor(
-      "How many traits would you like to search for? Enter a number from 1-5! ", chars
-    )
+  let newArray = people;
+  let numTraits = promptFor(
+    "How many traits would you like to search for? Please type single or multiple! ",
+    singMult
   );
-  {
-    if (numTraits < 1 || numTraits > 5) {
-      alert("Please Enter a Number Between 1 and 5");
+  if (numTraits === "single") {
+    let trait = promptFor("Please enter a trait type to search for. ", chars);
+    let traitValue = promptFor(
+      "Please enter the trait value you want to search for. ",
+      chars
+    );
+    newArray = newArray.filter(function (person) {
+      if (person[trait] === traitValue) {
+        return person;
+      }
+    });
+    if (newArray.length === 1) return newArray;
+    if (newArray.length === 0) {
+      alert("This function has resulted in zero results. Restarting!");
       return searchByTraits(people);
-    } else {
-      let newArray = people;
-      while (maxTraits < numTraits) {
-        let trait = promptFor(
-          "Please enter a trait type to search for. ",
-          chars
-        );
-        let traitValue = promptFor(
-          "Please enter the trait value you want to search for. ",
-          chars
-        );
-        newArray = newArray.filter(function (person) {
-          if (person[trait] === traitValue) {
-            return true;
-          }
-        });
-        if (newArray.length === 1) return newArray;
-        if (newArray.length === 0) {
-          alert("This function has resulted in zero results. Restarting!");
-          return searchByTraits(people);
+    }
+    displayPeople(newArray);
+    return newArray;
+  } else if (numTraits === "multiple") {
+    let numTraits = parseInt(
+      promptFor(
+        "How many traits would you like to search for? Enter a number from 2-5! ",
+        chars
+      )
+    );
+
+    if (numTraits === 2) {
+      let trait = promptFor(
+        "Please enter the first trait type to search for. ",
+        chars
+      );
+      let traitValue = promptFor(
+        "Please enter the first trait value you want to search for. ",
+        chars
+      );
+      let trait2 = promptFor(
+        "Please enter the second trait type to search for. ",
+        chars
+      );
+      let traitValue2 = promptFor(
+        "Please enter the second trait value you want to search for. ",
+        chars
+      );
+      newArray = newArray.filter(function (person) {
+        if (person[trait] === traitValue && person[trait2] === traitValue2) {
+          return person;
         }
-        displayPeople(newArray);
-        maxTraits += 1;
-      } return newArray
+      });
+      if (newArray.length === 1) return foundTraits;
+      if (newArray.length === 0) {
+        alert("This function has resulted in zero results. Restarting!");
+        return searchByTraits(people);
+      }
+      displayPeople(newArray);
+      return newArray;
+    } else if (numTraits === 3) {
+      let trait = promptFor(
+        "Please enter the first trait type to search for. ",
+        chars
+      );
+      let traitValue = promptFor(
+        "Please enter the first trait value you want to search for. ",
+        chars
+      );
+      let trait2 = promptFor(
+        "Please enter the second trait type to search for. ",
+        chars
+      );
+      let traitValue2 = promptFor(
+        "Please enter the second trait value you want to search for. ",
+        chars
+      );
+      let trait3 = promptFor(
+        "Please enter the third trait type to search for. ",
+        chars
+      );
+      let traitValue3 = promptFor(
+        "Please enter the third trait value you want to search for. ",
+        chars
+      );
+      newArray = newArray.filter(function (person) {
+        if (
+          person[trait] === traitValue &&
+          person[trait2] === traitValue2 &&
+          person[trait3] === traitValue3
+        ) {
+          return person;
+        }
+      });
+      if (newArray.length === 1) return foundTraits;
+      if (newArray.length === 0) {
+        alert("This function has resulted in zero results. Restarting!");
+        return searchByTraits(people);
+      }
+      displayPeople(newArray);
+      return newArray;
+    } else if (numTraits === 4) {
+      let trait = promptFor(
+        "Please enter the first trait type to search for. ",
+        chars
+      );
+      let traitValue = promptFor(
+        "Please enter the first trait value you want to search for. ",
+        chars
+      );
+      let trait2 = promptFor(
+        "Please enter the second trait type to search for. ",
+        chars
+      );
+      let traitValue2 = promptFor(
+        "Please enter the second trait value you want to search for. ",
+        chars
+      );
+      let trait3 = promptFor(
+        "Please enter the third trait type to search for. ",
+        chars
+      );
+      let traitValue3 = promptFor(
+        "Please enter the third trait value you want to search for. ",
+        chars
+      );
+      let trait4 = promptFor(
+        "Please enter the fourth trait type to search for. ",
+        chars
+      );
+      let traitValue4 = promptFor(
+        "Please enter the fourth trait value you want to search for. ",
+        chars
+      );
+      newArray = newArray.filter(function (person) {
+        if (
+          person[trait] === traitValue &&
+          person[trait2] === traitValue2 &&
+          person[trait3] === traitValue3 &&
+          person[trait4] === traitValue4
+        ) {
+          return person;
+        }
+      });
+      if (newArray.length === 1) return foundTraits;
+      if (newArray.length === 0) {
+        alert("This function has resulted in zero results. Restarting!");
+        return searchByTraits(people);
+      }
+      displayPeople(newArray);
+      return newArray;
+    } else if (numTraits === 5) {
+      let trait = promptFor(
+        "Please enter the first trait type to search for. ",
+        chars
+      );
+      let traitValue = promptFor(
+        "Please enter the first trait value you want to search for. ",
+        chars
+      );
+      let trait2 = promptFor(
+        "Please enter the second trait type to search for. ",
+        chars
+      );
+      let traitValue2 = promptFor(
+        "Please enter the second trait value you want to search for. ",
+        chars
+      );
+      let trait3 = promptFor(
+        "Please enter the third trait type to search for. ",
+        chars
+      );
+      let traitValue3 = promptFor(
+        "Please enter the third trait value you want to search for. ",
+        chars
+      );
+      let trait4 = promptFor(
+        "Please enter the fourth trait type to search for. ",
+        chars
+      );
+      let traitValue4 = promptFor(
+        "Please enter the fourth trait value you want to search for. ",
+        chars
+      );
+      let trait5 = promptFor(
+        "Please enter the fifth trait type to search for. ",
+        chars
+      );
+      let traitValue5 = promptFor(
+        "Please enter the fifth trait value you want to search for. ",
+        chars
+      );
+      newArray = newArray.filter(function (person) {
+        if (
+          person[trait] === traitValue &&
+          person[trait2] === traitValue2 &&
+          person[trait3] === traitValue3 &&
+          person[trait4] === traitValue4 &&
+          person[trait5] === traitValue5
+        ) {
+          return person;
+        }
+      });
+      if (newArray.length === 1) return foundTraits;
+      if (newArray.length === 0) {
+        alert("This function has resulted in zero results. Restarting!");
+        return searchByTraits(people);
+      }
+      displayPeople(newArray);
+      return newArray;
     }
-  } 
+  }
 }
-// function searchByTraits(people) {
-//     let maxTraits = 0;
-//     let numTraits = (
-//       promptFor(
-//         "How many traits would you like to search for? Please type single or multiple! ", singMult
-//       )
-//     ); 
-//     if (numTraits === "single"){
-//         let newArray = people;
-//           let trait = promptFor(
-//             "Please enter a trait type to search for. ",
-//             chars
-//           );
-//           let traitValue = promptFor(
-//             "Please enter the trait value you want to search for. ",
-//             chars
-//           );
-//           newArray = newArray.filter(function (person) {
-//             if (person[trait] === traitValue) {
-//               return person;
-//             }
-//           });
-//           if (newArray.length === 1) return newArray;
-//           if (newArray.length === 0) {
-//             alert("This function has resulted in zero results. Restarting!");
-//             return searchByTraits(people);
-//           }
-//           displayPeople(newArray);
-//     }
-//     if (numTraits === "multiple"){
 
-//     }
-//       if (numTraits < 2 || numTraits > 5) {
-//         alert("Please Enter a Number Between 2 and 5");
-//         return searchByTraits(people);
-//       } 
-//       else {
-//         let newArray = people;
-//         while (maxTraits < numTraits) {
-//           let trait = promptFor(
-//             "Please enter a trait type to search for. ",
-//             chars
-//           );
-//           let traitValue = promptFor(
-//             "Please enter the trait value you want to search for. ",
-//             chars
-//           );
-//           newArray = newArray.filter(function (person) {
-//             if (person[trait] === traitValue) 
-//             {
-//               return person;
-//             }
-//           });
-//           if (newArray.length === 1) return newArray;
-//           if (newArray.length === 0) {
-//             alert("This function has resulted in zero results. Restarting!");
-//             return searchByTraits(people);
-//           }
-//           displayPeople(newArray);
-//         }
-//       }
-//     }
-
-function recursiveFindTraits(obj, array = []){
-    let subArray = obj.trait;
-    array = [obj];
-    if (subArray.length === 0) {
-        return array;
-    }
-    for (let i = 0; i < subArray.length; i++) {
-        array = array.concat(
-            recursiveFindTraits(subArray[i])
-        );
-    }
+function recursiveFindTraits(obj, array = []) {
+  let subArray = obj.trait;
+  array = [obj];
+  if (subArray.length === 0) {
+    return array;
+  }
+  for (let i = 0; i < subArray.length; i++) {
+    array = array.concat(recursiveFindTraits(subArray[i]));
+  }
 }
 
-// function searchByTraits(people){
-//     let trait = promptFor("Please enter a trait type to search for. ", chars);
-//     let traitValue = promptFor("Please enter the trait value you want to search for. ", chars);
-//     let newArray = people.fliter(
-//         function(person){
-//             if(person[trait] === traitValue)
-//             return findPersonFamily
-//         }
-//     )
-//         displayPeople(newArray)
-// }
-// End of searchByTraits()
-function searchByCurrentSpouse(people) {
+
+function searchByCurrentSpouse(foundPerson,people) {
   let foundSpouse = people.filter(function (people) {
     if (foundPerson.id === people.currentSpouse) {
       return true;
     }
-    return foundSpouse;
-  });
+  });displayPeople(foundSpouse);
 }
-function searchBySibling(people) {
+
+function searchBySibling(foundPerson, people) {
   let foundSibling = people.filter(function (people) {
     if (
       foundPerson.lastName === people.lastName &&
@@ -355,34 +479,44 @@ function searchBySibling(people) {
     ) {
       return true;
     }
-    return foundSibling;
-  });
+  });displayPeople(foundSibling);
 }
-function searchByParents(people) {
+
+function searchByParents(foundPerson, people) {
   let foundParent = people.filter(function (people) {
     if (people.parents.includes(foundPerson.id)) {
       return true;
     }
-    return foundParent;
-  });
+  });displayPeople(foundParent);
 }
 
-// function searchByDescendants(people){}
+function findPersonDescendants(foundPerson, people){
+  let foundDescendant = people.filter(function (people) {
+    if (foundPerson.parents.includes(people.id)) 
+    {
+      return true;
+    }
+  });displayPeople(foundDescendant);
+}
 
 function findPersonFamily(foundPerson, people) {
   let foundFamily = people.filter(function (people) {
+    let label = (" ")
     if (foundPerson.id === people.currentSpouse) {
+      label = "Current Spouse"
       return true;
     } else if (
       foundPerson.lastName === people.lastName &&
       foundPerson.id != people.currentSpouse
     ) {
+      label = "Sibling";
       return true;
     } else if (people.parents.includes(foundPerson.id)) {
+      label = "Parent"
       return true;
     } else {
       return false;
     }
   });
-  displayPeople(foundFamily);
+  displayFamily(foundFamily);
 }
